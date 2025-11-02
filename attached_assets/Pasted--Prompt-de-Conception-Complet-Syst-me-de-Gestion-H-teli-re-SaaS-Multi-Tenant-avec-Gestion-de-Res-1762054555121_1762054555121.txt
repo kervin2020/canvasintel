@@ -1,0 +1,333 @@
+🏨 Prompt de Conception Complet — Système de Gestion Hôtelière SaaS Multi-Tenant avec Gestion de Restaurant
+🎯 Résumé du Projet
+
+Créer un SaaS multi-tenant de gestion hôtelière et de restauration destiné aux hôtels, motels et auberges d’Haïti (et à l’international).
+Chaque hôtel possède son propre tableau de bord pour gérer ses chambres, réservations, clients, paiements, factures, employés, rapports, et son restaurant interne (stocks, ventes, comptabilité).
+Le propriétaire de la plateforme (Super Admin) gère les hôtels, abonnements, paiements, support, facturation et statistiques globales.
+
+🚀 Objectifs & Indicateurs de Succès
+Objectif principal :
+
+Permettre aux hôtels de digitaliser leurs opérations (réservations, restaurant, paiements, rapports) avec un outil unique.
+
+Indicateurs de succès (3 premiers mois) :
+
+30 hôtels enregistrés sur la plateforme.
+
+Chaque hôtel gagne au moins 3 heures par semaine sur la gestion manuelle.
+
+90 % des paiements d’abonnements traités avec succès.
+
+Disponibilité de la plateforme ≥ 99 %.
+
+👥 Utilisateurs & Personas
+
+Propriétaire / Gérant d’hôtel — supervise tout, consulte les rapports et factures.
+
+Réceptionniste — gère réservations, arrivées/départs, clients.
+
+Superviseur Ménage — voit les chambres à nettoyer et l’état d’entretien.
+
+Comptable / Finance — visualise paiements, factures, rapports financiers.
+
+Chef de Restaurant / Serveur / Cuisinier — gère commandes, stock, ventes.
+
+Super Admin (plateforme) — administre les hôtels, abonnements, support, sécurité.
+
+⚙️ Fonctionnalités (MVP → Avancé)
+MVP (obligatoire)
+🏨 Gestion Hôtelière :
+
+Multi-tenant (chaque hôtel isolé).
+
+Tableau de bord hôtel : chambres, réservations, clients, check-in/out.
+
+Vue calendrier, rapports d’occupation et revenus.
+
+Gestion du personnel avec rôles (gérant, réceptionniste, ménage).
+
+Paiements et facturation Stripe.
+
+Tableau Super Admin : gestion des hôtels, abonnements, suspension.
+
+Notifications e-mail et reçus.
+
+Monnaie locale (HTG) + option USD.
+
+Design responsive (mobile-first).
+
+🍽️ Gestion de Restaurant (inclus dès MVP) :
+
+Gestion du menu (plats, prix, disponibilité).
+
+Gestion du stock et inventaire (produits, quantités, seuil d’alerte).
+
+Enregistrement des ventes (serveur, produit vendu, mode de paiement).
+
+Liaison avec la chambre du client pour facturer au séjour.
+
+Suivi du chiffre d’affaires du restaurant.
+
+Rapports de ventes et d’inventaire journaliers/mensuels.
+
+Permissions selon rôle (chef, serveur, stock manager).
+
+Avancé (post-MVP)
+
+Tarifs saisonniers, promotions, codes promo.
+
+Auto check-in invité (QR code).
+
+Export CSV/PDF des rapports et factures.
+
+Notifications SMS (Twilio) et WhatsApp.
+
+Multilingue (créole, français, anglais).
+
+Gestion de la maintenance et incidents.
+
+Comptabilité complète (journal de caisse, dépenses, marge brute).
+
+Intégration avec POS externe.
+
+Tableau de bord analytique avancé (MRR, ventes restaurant, taux d’occupation, performance employés).
+
+🛠️ Exigences Non-Fonctionnelles
+
+Sécurité : JWT, mots de passe hashés (bcrypt), HTTPS, RBAC, validation stricte.
+
+Scalabilité : base unique avec tenant_id ou DB séparées selon taille.
+
+Performance : < 2s de chargement moyen.
+
+Conformité PCI via Stripe.
+
+Sauvegardes quotidiennes, logs, monitoring Sentry/UptimeRobot.
+
+Accessibilité WCAG AA.
+
+Multidevise et fuseaux horaires personnalisables.
+
+🧱 Modèle Multi-Tenant Recommandé
+
+Application unique, base unique.
+
+Champ tenant_id sur chaque table clé (Hotel, Room, Reservation, Product, etc.).
+
+Accès strictement contrôlé par tenant_id.
+
+Super Admin : accès global.
+
+🧩 Modèle de Données (ER Simplifié)
+Hôtel
+
+id, nom, adresse, téléphone, email, plan, devise, statut, created_at
+
+Utilisateur
+
+id, hotel_id, nom, email, rôle, password_hash, actif, created_at
+
+Chambre
+
+id, hotel_id, type, prix_nuit, capacité, statut, notes
+
+Réservation
+
+id, hotel_id, chambre_id, client_id, check_in/out, statut, montant_total, paiement_statut
+
+Client
+
+id, hotel_id, nom, téléphone, email, carte_id, historique
+
+Paiement
+
+id, hotel_id, reservation_id, montant, devise, méthode, statut, stripe_id
+
+Facture
+
+id, hotel_id, paiement_id, numéro, pdf_url, created_at
+
+🍽️ Tables Restaurant
+Produit
+
+id, hotel_id, nom, catégorie, prix_unitaire, stock_actuel, seuil_alerte, unité (ex: kg, bouteille)
+
+Vente
+
+id, hotel_id, produit_id, employé_id, quantité, total, méthode_paiement, chambre_id (optionnel), created_at
+
+Achat
+
+id, hotel_id, fournisseur, produit_id, quantité, coût_unitaire, total, date_achat
+
+Fournisseur
+
+id, hotel_id, nom, contact, adresse
+
+Rapport Comptable
+
+id, hotel_id, période, total_ventes, total_achats, bénéfice_net, total_paiements
+
+📊 Rapports Clés
+
+Rapport d’occupation (hôtel).
+
+Rapport de revenus (chambres + restaurant).
+
+Rapport de stock (ruptures, valeur totale).
+
+Rapport comptable complet (ventes, dépenses, bénéfices).
+
+Historique des ventes par employé.
+
+Export PDF/CSV.
+
+🔌 Intégrations
+
+Stripe : abonnements + paiements clients.
+
+Twilio : SMS (optionnel).
+
+SendGrid / Mailgun : e-mails transactionnels.
+
+AWS S3 : stockage images et factures.
+
+Sentry / UptimeRobot : monitoring.
+
+Google Analytics : suivi usage.
+
+🧰 API Principales
+Auth
+
+POST /api/auth/register — créer hôtel + compte propriétaire.
+
+POST /api/auth/login — JWT.
+
+POST /api/auth/refresh.
+
+Hôtels & Utilisateurs
+
+GET /api/hotels — admin.
+
+POST /api/hotels/:id/users — inviter employé.
+
+Chambres & Réservations
+
+CRUD /api/hotels/:id/rooms, /api/hotels/:id/reservations.
+
+Restaurant
+
+CRUD /api/hotels/:id/products — produits du restaurant.
+
+POST /api/hotels/:id/sales — enregistre une vente.
+
+GET /api/hotels/:id/inventory — voir stock actuel.
+
+POST /api/hotels/:id/purchases — ajout réapprovisionnement.
+
+GET /api/hotels/:id/reports/restaurant — rapport de ventes/stock.
+
+Super Admin
+
+GET /api/superadmin/hotels — liste hôtels.
+
+PATCH /api/superadmin/hotels/:id — suspendre/réactiver.
+
+GET /api/superadmin/analytics — MRR, activité, abonnements.
+
+💻 Technologies Recommandées
+
+Frontend : Next.js + Tailwind CSS (SSR + responsive).
+
+Backend : Node.js (Express) ou Flask + SQLAlchemy.
+
+Base de données : PostgreSQL.
+
+Cache / Jobs : Redis.
+
+Stockage fichiers : S3/DigitalOcean Spaces.
+
+CI/CD : GitHub Actions + Vercel (frontend) + Render/Railway (backend).
+
+📱 Écrans à Concevoir (UX/UI)
+Pour les hôtels
+
+Connexion / Inscription
+
+Onboarding (infos hôtel, chambres, restaurant)
+
+Tableau de bord général
+
+Réservations (liste + calendrier)
+
+Détails client / check-in / check-out
+
+Chambres & tarifs
+
+Restaurant
+
+Menu
+
+Inventaire
+
+Commandes du jour
+
+Ventes par employé
+
+Rapport de stock
+
+Factures / paiements
+
+Rapports (occupations, revenus, restaurant, comptable)
+
+Paramètres (hôtel, équipe, taxes, devise, notifications)
+
+Pour le Super Admin
+
+Tableau de bord global
+
+Liste des hôtels (statut, plan, contacts)
+
+Détails d’un hôtel (activité, abonnements)
+
+Gestion des plans et tarifs
+
+Support et tickets
+
+Rapports financiers globaux (MRR, ventes totales)
+
+Logs & sécurité
+
+📈 Modèle de Facturation Exemple
+
+Essai gratuit : 14 jours.
+
+Basic (800 HTG / mois) : ≤ 20 chambres, rapports de base.
+
+Pro (2,200 HTG / mois) : illimité, module restaurant complet, rapports avancés.
+
+Enterprise : sur devis (support dédié + intégrations).
+
+✅ Critères d’Acceptation (MVP)
+
+Hôtel peut s’inscrire et gérer ses chambres et restaurant.
+
+Réceptionniste peut gérer réservations sans double booking.
+
+Serveur peut enregistrer ventes et voir stock.
+
+Rapports de revenus (hôtel + restaurant) générés correctement.
+
+Super Admin voit abonnements et métriques.
+
+Application déployée, sécurisée (HTTPS), avec documentation complète.
+
+🧾 Prompt Résumé Prêt à Copier
+
+Créez un SaaS de gestion hôtelière multi-tenant avec un module de gestion de restaurant intégré. Chaque hôtel possède un tableau de bord complet pour gérer ses chambres, réservations, clients, paiements, factures, personnel, et le restaurant (menu, stock, ventes, rapports comptables). Le Super Admin dispose d’un espace global pour gérer les hôtels, abonnements Stripe, support, et statistiques (MRR, revenus).
+
+Technologies : Next.js + Tailwind (frontend), Flask/Express + PostgreSQL + Redis (backend), Stripe + S3 + SendGrid (intégrations).
+
+Fonctionnalités : multi-tenant, calendrier des réservations, check-in/out, gestion de stock, suivi des ventes par employé, factures PDF, rapports comptables, notifications, sécurité JWT, CI/CD, et support multilingue (créole, français, anglais).
+
+Livrables : wireframes Figma, schéma ER, endpoints API, documentation et MVP déployé.
