@@ -24,45 +24,45 @@ import AdminAnalytics from "@/pages/admin/analytics";
 
 function AppContent() {
   const [location, setLocation] = useLocation();
-  const { isAuthenticated, user } = useAuth();
-  
+  // const { isAuthenticated, user } = useAuth();
+
   // Check if we're on an auth page (login or register)
   const isAuthPage = location === "/login" || location === "/register";
-  
+
   // Check if we're on an admin page
   const isAdminPage = location.startsWith("/admin");
 
   // Redirect to login if not authenticated and not on auth page
-  if (!isAuthenticated && !isAuthPage) {
-    setLocation("/login");
-    return null;
-  }
+  // if (!isAuthenticated && !isAuthPage) {
+  //   setLocation("/login");
+  //   return null;
+  // }
 
-  // Redirect super admin to admin dashboard
-  if (isAuthenticated && user?.role === "super_admin" && !isAdminPage && location === "/") {
-    setLocation("/admin");
-    return null;
-  }
+  // // Redirect super admin to admin dashboard
+  // if (isAuthenticated && user?.role === "super_admin" && !isAdminPage && location === "/") {
+  //   setLocation("/admin");
+  //   return null;
+  // }
 
-  if (isAuthPage) {
-    // If already authenticated, redirect to appropriate dashboard
-    if (isAuthenticated) {
-      if (user?.role === "super_admin") {
-        setLocation("/admin");
-      } else {
-        setLocation("/");
-      }
-      return null;
-    }
-    
-    // Render auth pages without sidebar
-    return (
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
-      </Switch>
-    );
-  }
+  // if (isAuthPage) {
+  //   // If already authenticated, redirect to appropriate dashboard
+  //   if (isAuthenticated) {
+  //     if (user?.role === "super_admin") {
+  //       setLocation("/admin");
+  //     } else {
+  //       setLocation("/");
+  //     }
+  //     return null;
+  //   }
+
+  //   // Render auth pages without sidebar
+  //   return (
+  //     <Switch>
+  //       <Route path="/login" component={Login} />
+  //       <Route path="/register" component={Register} />
+  //     </Switch>
+  //   );
+  // }
 
   // Custom sidebar width for hotel application
   const style = {
@@ -97,12 +97,12 @@ function AppContent() {
                 <Route path="/restaurant" component={Restaurant} />
                 <Route path="/reports" component={Reports} />
                 <Route path="/settings" component={Settings} />
-                
+
                 {/* Super Admin Pages */}
                 <Route path="/admin" component={AdminDashboard} />
                 <Route path="/admin/hotels" component={AdminHotels} />
                 <Route path="/admin/analytics" component={AdminAnalytics} />
-                
+
                 {/* Fallback to 404 */}
                 <Route component={NotFound} />
               </Switch>
